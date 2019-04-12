@@ -3,7 +3,9 @@ const express = require('express');
 const path = require('path');
 const cookieParser = require('cookie-parser');
 const logger = require('morgan');
+const dotenv = require('dotenv').config();
 
+const db = require('./lib/mysql');
 const indexRouter = require('./routes/index');
 
 const app = express();
@@ -20,6 +22,15 @@ app.get('*', (req, res) => {
   //res.sendFile(path.join(__dirname+'/client/build/index.html'));
   res.sendFile(path.join(__dirname,'client/build','index.html'));
 });
+
+// Connect to MySQL on start
+db.connect(db.MODE_PRODUCTION, function(err) {
+  if (err) {
+    console.log('ERROR: Unable to connect to MySQL');
+  } else {
+    console.log('Connected to MySQL!');
+  }
+})
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {

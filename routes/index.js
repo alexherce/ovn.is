@@ -1,8 +1,9 @@
 const express = require('express');
 const router = express.Router();
 
-router.get('/:id', function(req, res, next) {
-  res.status(200).send({success: true, id: req.params.id});
-});
+const linkController = require('../controllers/links.controller');
+
+router.get('/:id', linkController.getFullUrl);
+router.post('/api/create', linkController.create);
 
 module.exports = router;
