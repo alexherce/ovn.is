@@ -8,7 +8,7 @@ RUN npm cache clean --force && npm install
 # copy app source to image after npm install so that
 # application code changes don't bust the docker cache of npm install step
 COPY . /opt/app
-COPY /build /opt/app/build
+COPY /client/build /opt/app/client/build
 
 # set application PORT and expose docker PORT
 ENV PORT 3312
