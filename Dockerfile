@@ -13,7 +13,7 @@ COPY /client/build /opt/app/client/build
 # set application PORT and expose docker PORT
 ENV PORT 3312
 ENV NODE_ENV="production"
-ENV DB_HOST = "10.21.16.3"
+ENV DB_HOST = "35.239.45.2"
 ENV PRODUCTION_DB = "ovnis"
 ENV DB_WRITE_1_USR = "ovnis-write"
 ENV DB_WRITE_1_PWD = "ge3KBK3Ae#aFp$6J"
