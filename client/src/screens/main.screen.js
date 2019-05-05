@@ -56,9 +56,9 @@ const HomepageHeading = ({ mobile }) => (
           />
         </Grid.Column>
         <Grid.Column floated='right' width={6}>
-          <Responsive {...Responsive.onlyMobile} as={Image} size='small' src='/alien-ship-colored.png' verticalAlign='middle'/>
-          <Responsive {...Responsive.onlyTablet} as={Image} size='large' src='/alien-ship-colored.png' verticalAlign='middle' style={{marginTop: '7em'}}/>
-          <Responsive {...Responsive.onlyComputer} as={Image} size='large' src='/alien-ship-colored.png' verticalAlign='middle' style={{marginTop: '7em'}}/>
+          <Responsive {...Responsive.onlyMobile} as={Image} size='small' src='https://storage.googleapis.com/ovnis/assets/alien-ship-colored.png' verticalAlign='middle'/>
+          <Responsive {...Responsive.onlyTablet} as={Image} size='large' src='https://storage.googleapis.com/ovnis/assets/alien-ship-colored.png' verticalAlign='middle' style={{marginTop: '7em'}}/>
+          <Responsive {...Responsive.onlyComputer} as={Image} size='large' src='https://storage.googleapis.com/ovnis/assets/alien-ship-colored.png' verticalAlign='middle' style={{marginTop: '7em'}}/>
         </Grid.Column>
       </Grid.Row>
     </Grid>
@@ -100,7 +100,7 @@ class DesktopContainer extends Component {
               size='large' >
               <Container>
                 <Menu.Item as='a'>
-                  <Image size='small' src='/ovnis-logo.png' />
+                  <Image size='small' src='https://storage.googleapis.com/ovnis/assets/logo.png' />
                 </Menu.Item>
                 <Menu.Item as='a'>About</Menu.Item>
                 <Menu.Item as='a'>Plans</Menu.Item>
@@ -347,9 +347,9 @@ class Main extends Component {
           <Grid container stackable verticalAlign='middle'>
             <Grid.Row>
               <Grid.Column width={6} textAlign='center'>
-                <Responsive {...Responsive.onlyMobile} as={Image} size='small' src='/abduction-cow.png' verticalAlign='middle'/>
-                <Responsive {...Responsive.onlyTablet} as={Image} size='large' src='/abduction-cow.png' verticalAlign='middle' />
-                <Responsive {...Responsive.onlyComputer} as={Image} size='large' src='/abduction-cow.png' verticalAlign='middle' />
+                <Responsive {...Responsive.onlyMobile} as={Image} size='small' src='https://storage.googleapis.com/ovnis/assets/abduction-cow.png' verticalAlign='middle'/>
+                <Responsive {...Responsive.onlyTablet} as={Image} size='large' src='https://storage.googleapis.com/ovnis/assets/abduction-cow.png' verticalAlign='middle' />
+                <Responsive {...Responsive.onlyComputer} as={Image} size='large' src='https://storage.googleapis.com/ovnis/assets/abduction-cow.png' verticalAlign='middle' />
               </Grid.Column>
               <Grid.Column floated='right' width={8}>
                 <Header as='h3' style={{ fontSize: '2em' }}>
