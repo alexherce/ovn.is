@@ -17,8 +17,10 @@ import {
   Form,
   Input,
   Dimmer,
-  Loader
+  Loader,
+  Message
 } from 'semantic-ui-react';
+import {CopyToClipboard} from 'react-copy-to-clipboard';
 
 import api from '../lib/api';
 
@@ -53,7 +55,7 @@ const HomepageHeading = ({ mobile }) => (
             }}
           />
         </Grid.Column>
-        <Grid.Column floated='right' width={6} centered>
+        <Grid.Column floated='right' width={6}>
           <Responsive {...Responsive.onlyMobile} as={Image} size='small' src='/alien-ship-colored.png' verticalAlign='middle'/>
           <Responsive {...Responsive.onlyTablet} as={Image} size='large' src='/alien-ship-colored.png' verticalAlign='middle' style={{marginTop: '7em'}}/>
           <Responsive {...Responsive.onlyComputer} as={Image} size='large' src='/alien-ship-colored.png' verticalAlign='middle' style={{marginTop: '7em'}}/>
@@ -167,7 +169,7 @@ class MobileContainer extends Component {
                 <Menu.Item onClick={this.handleToggle}>
                   <Icon name='sidebar' />
                 </Menu.Item>
-                <Menu.Item position='middle'>
+                <Menu.Item>
                   <Image size='tiny' src='/ovnis-logo.png' />
                 </Menu.Item>
                 <Menu.Item position='right'>
@@ -209,6 +211,7 @@ class Main extends Component {
     this.state = {
       loading: false,
       generated: false,
+      error: false,
       linkGenerated: '',
       longUrl: ''
     };
@@ -220,20 +223,24 @@ class Main extends Component {
   createLink = () => {
     this.setState({loading: true});
 
-    api.post('/create', {url: this.state.longUrl})
+    api.post('/create', {url: this.state.longUrl}, { headers: { 'x-ovnis-token': 'hola' }})
     .then(response => {
       if (response.ok) {
-        console.log(response);
-        return this.setState({linkGenerated: response.data.url, loading: false, generated: true, longUrl: ''});
+        return this.setState({linkGenerated: 'https://ovn.is/' + response.data.url, loading: false, generated: true, longUrl: ''});
       } else {
         console.log(response);
-        return this.setState({loading: false, generated: false});
+        if (response.problem == 'CLIENT_ERROR') {
+          return this.setState({loading: false, generated: false, error: true, errorMessage: response.data.error});
+        } else {
+          return this.setState({loading: false, generated: false, error: true, errorMessage: response.problem});
+        }
       }
     })
   }
 
   Renderer = () => {
     if (this.state.generated == true) return(<this.GeneratedLink/>);
+    if (this.state.error == true) return(<this.GenerateError/>);
     return (<this.GenerateForm/>);
   }
 
@@ -247,15 +254,24 @@ class Main extends Component {
           <Grid.Row centered>
             <Form size='massive'>
               <Form.Field>
-                <Form.Input
-                  large
-                  inverted
-                  action={{ color: 'blue', labelPosition: 'right', icon: 'copy', content: 'Copy', size: 'massive' }}
-                  placeholder='Shorten your link'
-                  value={this.state.linkGenerated}
-                />
+                <CopyToClipboard text={this.state.linkGenerated}>
+                  <Form.Input
+                    large
+                    inverted
+                    action={{ color: 'blue', labelPosition: 'right', icon: 'copy', content: 'Copy', size: 'massive' }}
+                    placeholder='Shorten your link'
+                    value={this.state.linkGenerated}
+                  />
+                </CopyToClipboard>
+
               </Form.Field>
             </Form>
+          </Grid.Row>
+          <Grid.Row>
+            <Button primary size='huge' style={{marginTop: '2em'}} onClick={() => this.setState({generated: false})}>
+              Generate a new one
+              <Icon name='right arrow' />
+            </Button>
           </Grid.Row>
         </Grid.Column>
       </Grid>
@@ -276,15 +292,30 @@ class Main extends Component {
             <Form size='massive'>
               <Form.Field>
                 <Form.Input
-                  large
                   inverted
                   action={{color: 'blue', content: 'Shorten', size: 'massive', onClick: () => this.createLink()}}
                   placeholder='Shorten your link'
                   value={this.state.longUrl}
-                  onChange={(v) => this.setState({longUrl: v.target.value}, () => {console.log(this.state)})}
+                  onChange={(v) => this.setState({longUrl: v.target.value})}
                 />
               </Form.Field>
             </Form>
+          </Grid.Row>
+        </Grid.Column>
+      </Grid>
+    );
+  }
+
+  GenerateError = () => {
+    return(
+      <Grid container stackable verticalAlign='middle' textAlign='center'>
+        <Grid.Column>
+          <Grid.Row centered>
+            <Message warning>
+              <Message.Header>Sorry, something went wrong</Message.Header>
+              <p>{(!!this.state.errorMessage)?(this.state.errorMessage):('Please try again...')}</p>
+              <Button color='yellow' onClick={() => this.setState({error: false})}>Try again</Button>
+            </Message>
           </Grid.Row>
         </Grid.Column>
       </Grid>
@@ -315,7 +346,7 @@ class Main extends Component {
         <Segment style={{ padding: '8em 0em' }} vertical>
           <Grid container stackable verticalAlign='middle'>
             <Grid.Row>
-              <Grid.Column width={6} centered textAlign='center'>
+              <Grid.Column width={6} textAlign='center'>
                 <Responsive {...Responsive.onlyMobile} as={Image} size='small' src='/abduction-cow.png' verticalAlign='middle'/>
                 <Responsive {...Responsive.onlyTablet} as={Image} size='large' src='/abduction-cow.png' verticalAlign='middle' />
                 <Responsive {...Responsive.onlyComputer} as={Image} size='large' src='/abduction-cow.png' verticalAlign='middle' />
