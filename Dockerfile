@@ -1,6 +1,6 @@
 FROM node:10.15 as build-deps
 WORKDIR /opt/app/client
-COPY /client/package.json /client/package-lock.json* /opt/app/client
+COPY /client/package.json /client/package-lock.json* /opt/app/client/
 RUN npm cache clean --force && npm install
 COPY /client /opt/app/client
 RUN npm run build
