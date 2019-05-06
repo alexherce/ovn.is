@@ -39,7 +39,7 @@ class Landing extends Component {
   createLink = () => {
     this.setState({loading: true});
 
-    api.post('/create?key=AIzaSyD8xnJttXrsQfCamH9Wgsw6hIWO7yP4L1Q', {url: this.state.longUrl}, {headers: {'Content-Type': 'application/json'}})
+    api.post('/create?key=AIzaSyD8xnJttXrsQfCamH9Wgsw6hIWO7yP4L1Q', {url: this.state.longUrl})
     .then(response => {
       if (response.ok) {
         return this.setState({linkGenerated: 'https://ovn.is/' + response.data.url, loading: false, generated: true, longUrl: ''});
@@ -61,7 +61,8 @@ class Landing extends Component {
     this.setState({loading: true});
 
     const headers = {
-      'Content-Type': 'multipart/form-data'
+      'Content-Type': 'multipart/form-data',
+      'Accept': 'application/json'
     };
 
     let form = new FormData();

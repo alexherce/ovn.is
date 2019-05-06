@@ -3,7 +3,11 @@ import { create } from "apisauce";
 const apiEndpoint = "https://api.ovn.is";
 
 const api = create({
-  baseURL: apiEndpoint
+  baseURL: apiEndpoint,
+   headers: {
+     'Content-Type': 'application/json; charset=utf-8',
+     'Accept': 'application/json'
+   }
 });
 
 // reset on 401 API responses
