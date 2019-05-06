@@ -1,9 +1,7 @@
 import PropTypes from 'prop-types';
 import React, { Component } from 'react';
 import {
-  Button,
   Container,
-  Divider,
   Grid,
   Header,
   Icon,
@@ -12,113 +10,84 @@ import {
   Menu,
   Responsive,
   Segment,
-  Sidebar,
-  Visibility,
-  Form,
-  Input,
-  Dimmer,
-  Loader,
-  Message
+  Sidebar
 } from 'semantic-ui-react';
-import {CopyToClipboard} from 'react-copy-to-clipboard';
+import { BrowserRouter as Router, Route, Switch } from "react-router-dom";
 
-import api from '../lib/api';
+import Landing from './landing.screen';
+import NoMatch from './nomatch.screen';
+import NotFound from './notfound.screen';
+import Error from './error.screen';
 
 const getWidth = () => {
   const isSSR = typeof window === 'undefined'
   return isSSR ? Responsive.onlyTablet.minWidth : window.innerWidth
 }
 
-const HomepageHeading = ({ mobile }) => (
-  <Container>
-    <Grid container stackable verticalAlign='middle'>
-      <Grid.Row>
-        <Grid.Column width={10} textAlign='left'>
-          <Header
-            as='h1'
-            content='Short and fast links out of this world'
-            style={{
-              fontSize: mobile ? '2em' : '4em',
-              fontWeight: 'bold',
-              marginBottom: 0,
-              marginTop: mobile ? '1.5em' : '3em',
-              width: '100%'
-            }}
-          />
-          <Header
-            as='h2'
-            content='Create and share trusted, powerful short links with analytics'
-            style={{
-              fontSize: mobile ? '1.5em' : '1.7em',
-              fontWeight: '100',
-              marginTop: mobile ? '0.25em' : '0.5em',
-            }}
-          />
-        </Grid.Column>
-        <Grid.Column floated='right' width={6}>
-          <Responsive {...Responsive.onlyMobile} as={Image} size='small' src='https://storage.googleapis.com/ovnis/assets/alien-ship-colored.png' verticalAlign='middle'/>
-          <Responsive {...Responsive.onlyTablet} as={Image} size='large' src='https://storage.googleapis.com/ovnis/assets/alien-ship-colored.png' verticalAlign='middle' style={{marginTop: '7em'}}/>
-          <Responsive {...Responsive.onlyComputer} as={Image} size='large' src='https://storage.googleapis.com/ovnis/assets/alien-ship-colored.png' verticalAlign='middle' style={{marginTop: '7em'}}/>
-        </Grid.Column>
-      </Grid.Row>
-    </Grid>
-  </Container>
-)
-
-HomepageHeading.propTypes = {
-  mobile: PropTypes.bool,
+class Footer extends Component {
+  render() {
+    return(
+      <footer>
+        <Segment inverted vertical style={{ padding: '5em 0em' }}>
+          <Container>
+            <Grid divided inverted stackable>
+              <Grid.Row>
+                <Grid.Column width={4}>
+                  <Header inverted as='h4' content='About' />
+                  <List link inverted>
+                    <List.Item as='a'>About Us</List.Item>
+                    <List.Item as='a'>Contact Us</List.Item>
+                  </List>
+                </Grid.Column>
+                <Grid.Column width={4}>
+                  <Header inverted as='h4' content='Legal' />
+                  <List link inverted>
+                    <List.Item as='a'>Terms</List.Item>
+                    <List.Item as='a'>Privacy</List.Item>
+                  </List>
+                </Grid.Column>
+                <Grid.Column width={4}>
+                  <Header inverted as='h4' content='Credits' />
+                  <p>Created by <a href='https://herce.co' target='_blank' rel="noopener noreferrer">Alex Herce</a></p>
+                  <p>Images made by <a href="https://www.flaticon.com/authors/eucalyp" target='_blank' rel="noopener noreferrer">Eucalyp</a> & <a href="https://www.freepik.com/" target='_blank' rel="noopener noreferrer">Freepik</a></p>
+                </Grid.Column>
+                <Grid.Column width={4}>
+                  <Header as='h4' inverted>
+                    © 2019 ovn.is
+                  </Header>
+                  <p>Made with <span role="img" aria-label="love">❤️</span> in Mexico City</p>
+                </Grid.Column>
+              </Grid.Row>
+            </Grid>
+          </Container>
+        </Segment>
+      </footer>
+    );
+  }
 }
 
-/* Heads up!
-* Neither Semantic UI nor Semantic UI React offer a responsive navbar, however, it can be implemented easily.
-* It can be more complicated, but you can create really flexible markup.
-*/
 class DesktopContainer extends Component {
-  state = {}
-
-  hideFixedMenu = () => this.setState({ fixed: false })
-  showFixedMenu = () => this.setState({ fixed: true })
-
   render() {
     const { children } = this.props
-    const { fixed } = this.state
 
     return (
-      <Responsive getWidth={getWidth} minWidth={Responsive.onlyTablet.minWidth}>
-        <Visibility
-          once={false}
-          onBottomPassed={this.showFixedMenu}
-          onBottomPassedReverse={this.hideFixedMenu} >
-          <Segment
-            textAlign='center'
-            style={{ minHeight: 600, padding: '1em 0em' }}
-            vertical >
-            <Menu
-              borderless
-              fixed={'top'}
-              secondary={false}
-              size='large' >
-              <Container>
-                <Menu.Item as='a'>
-                  <Image size='small' src='https://storage.googleapis.com/ovnis/assets/logo.png' />
-                </Menu.Item>
-                <Menu.Item as='a'>About</Menu.Item>
-                <Menu.Item as='a'>Plans</Menu.Item>
-                <Menu.Item position='right'>
-                  <Button as='a'>
-                    Log in
-                  </Button>
-                  <Button as='a' style={{ marginLeft: '0.5em' }}>
-                    Sign Up
-                  </Button>
-                </Menu.Item>
-              </Container>
-            </Menu>
-            <HomepageHeading />
-          </Segment>
-        </Visibility>
+      <Responsive getWidth={getWidth} minWidth={Responsive.onlyTablet.minWidth} style={{minHeight: '100vh', display: 'flex', flexDirection: 'column'}}>
 
-        {children}
+        <div style={{flex: 1}}>
+          <Menu
+            borderless
+            secondary={true}
+            size='large' >
+            <Container>
+              <Menu.Item>
+                <Image size='small' src='https://storage.googleapis.com/ovnis/assets/logo.png' href='/' />
+              </Menu.Item>
+              <Menu.Item as='a' position='right' href='/x/about'>About</Menu.Item>
+            </Container>
+          </Menu>
+          {children}
+        </div>
+        <Footer/>
       </Responsive>
     )
   }
@@ -151,38 +120,28 @@ class MobileContainer extends Component {
           onHide={this.handleSidebarHide}
           vertical
           visible={sidebarOpened} >
-          <Menu.Item as='a' active>
-            Home
-          </Menu.Item>
-          <Menu.Item as='a'>About</Menu.Item>
-          <Menu.Item as='a'>Plans</Menu.Item>
-          <Menu.Item as='a'>Log in</Menu.Item>
-          <Menu.Item as='a'>Sign Up</Menu.Item>
+          <Menu.Item as='a' href='/'>Home</Menu.Item>
+          <Menu.Item as='a' href='/x/about'>About</Menu.Item>
         </Sidebar>
-
         <Sidebar.Pusher dimmed={sidebarOpened}>
           <Segment
             textAlign='center'
-            style={{ minHeight: 350, padding: '1em 0em' }} >
+            borderless
+            secondary={true}
+            style={{ padding: '1em 0em' }} >
             <Container>
               <Menu pointing secondary size='large'>
                 <Menu.Item onClick={this.handleToggle}>
                   <Icon name='sidebar' />
                 </Menu.Item>
                 <Menu.Item>
-                  <Image size='tiny' src='/ovnis-logo.png' />
-                </Menu.Item>
-                <Menu.Item position='right'>
-                  <Button as='a' style={{ marginLeft: '0.5em' }}>
-                    Sign Up
-                  </Button>
+                  <Image size='tiny' src='https://storage.googleapis.com/ovnis/assets/logo.png' />
                 </Menu.Item>
               </Menu>
             </Container>
-            <HomepageHeading mobile />
           </Segment>
-
           {children}
+          <Footer/>
         </Sidebar.Pusher>
       </Responsive>
     )
@@ -194,7 +153,7 @@ MobileContainer.propTypes = {
 }
 
 const ResponsiveContainer = ({ children }) => (
-  <div>
+  <div style={{minHeight: '100vh', display: 'flex', flexDirection: 'column'}}>
     <DesktopContainer>{children}</DesktopContainer>
     <MobileContainer>{children}</MobileContainer>
   </div>
@@ -208,260 +167,20 @@ class Main extends Component {
   constructor(props) {
     super(props);
 
-    this.state = {
-      loading: false,
-      generated: false,
-      error: false,
-      linkGenerated: '',
-      longUrl: ''
-    };
-  }
-
-  hideFixedMenu = () => this.setState({ fixed: false });
-  showFixedMenu = () => this.setState({ fixed: true });
-
-  fileInputRef = React.createRef();
-
-  fileChange = e => {
-    this.setState({ file: e.target.files[0] });
-  };
-
-  createLink = () => {
-    this.setState({loading: true});
-
-    api.post('/create?key=AIzaSyD8xnJttXrsQfCamH9Wgsw6hIWO7yP4L1Q', {url: this.state.longUrl}, { headers: { 'x-ovnis-token': 'hola' }})
-    .then(response => {
-      if (response.ok) {
-        return this.setState({linkGenerated: 'https://ovn.is/' + response.data.url, loading: false, generated: true, longUrl: ''});
-      } else {
-        console.log(response);
-        if (response.problem == 'CLIENT_ERROR') {
-          if (response.data.error) return this.setState({loading: false, generated: false, error: true, errorMessage: response.data.error, longUrl: ''});
-          if (response.data.message) return this.setState({loading: false, generated: false, error: true, errorMessage: response.data.message, longUrl: ''});
-          return this.setState({loading: false, generated: false, error: true, errorMessage: 'Unknown error, please try again...', longUrl: ''});
-        } else {
-          return this.setState({loading: false, generated: false, error: true, errorMessage: response.problem, longUrl: ''});
-        }
-      }
-    })
-  }
-
-  handleUpload = () => {
-    this.setState({loading: true});
-
-    const headers = {
-      'Content-Type': 'multipart/form-data'
-    };
-
-    let form = new FormData();
-
-    form.append('file', this.state.file);
-    form.append('identifier', this.state.folder);
-
-    api.post('https://uploader.ovn.is/upload?key=AIzaSyD8xnJttXrsQfCamH9Wgsw6hIWO7yP4L1Q', form, { headers })
-    .then(response => {
-      if (response.ok) {
-        return this.setState({linkGenerated: response.data.url, loading: false, generated: true, longUrl: '', file: ''});
-      } else {
-        console.log(response.data);
-        if (response.problem == 'CLIENT_ERROR') {
-          if (response.data.error) return this.setState({loading: false, generated: false, error: true, errorMessage: response.data.error, longUrl: '', file: ''});
-          if (response.data.message) return this.setState({loading: false, generated: false, error: true, errorMessage: response.data.message, longUrl: '', file: ''});
-          return this.setState({loading: false, generated: false, error: true, errorMessage: 'Unknown error, please try again...', longUrl: '', file: ''});
-        } else {
-          return this.setState({loading: false, generated: false, error: true, errorMessage: 'Unknown error, please try again...', longUrl: '', file: ''});
-        }
-      }
-    });
-  }
-
-  Renderer = () => {
-    if (this.state.generated == true) return(<this.GeneratedLink/>);
-    if (this.state.error == true) return(<this.GenerateError/>);
-    return (<this.GenerateForm/>);
-  }
-
-  GeneratedLink = () => {
-    return(
-      <Grid container stackable verticalAlign='middle' textAlign='center'>
-        <Grid.Column>
-          <Grid.Row centered>
-            <Header size='huge' inverted>Here is your new short link!</Header>
-          </Grid.Row>
-          <Grid.Row centered>
-            <Form size='massive'>
-              <Form.Field>
-                <CopyToClipboard text={this.state.linkGenerated}>
-                  <Form.Input
-                    large
-                    inverted
-                    action={{ color: 'blue', labelPosition: 'right', icon: 'copy', content: 'Copy', size: 'massive' }}
-                    placeholder='Shorten your link'
-                    value={this.state.linkGenerated}
-                  />
-                </CopyToClipboard>
-
-              </Form.Field>
-            </Form>
-          </Grid.Row>
-          <Grid.Row>
-            <Button primary size='huge' style={{marginTop: '2em'}} onClick={() => this.setState({generated: false})}>
-              Generate a new one
-              <Icon name='right arrow' />
-            </Button>
-          </Grid.Row>
-        </Grid.Column>
-      </Grid>
-    );
-  }
-
-  GenerateForm = () => {
-    return(
-      <Grid container stackable verticalAlign='middle' textAlign='center' divided='horizontally'>
-        <Grid.Row centered>
-          <Header size='huge' inverted>Get your free short link</Header>
-          <Dimmer active={this.state.loading}>
-            <Loader size='large'>Creating link...</Loader>
-          </Dimmer>
-        </Grid.Row>
-        <Grid.Row centered>
-          <Grid.Column width={8} style={{padding: '1em'}}>
-            <Form size='massive'>
-              <Form.Group>
-                <Form.Input
-                  inverted
-                  action={{color: 'blue', content: 'Shorten', size: 'massive', onClick: () => this.createLink()}}
-                  placeholder='Shorten your link'
-                  value={this.state.longUrl}
-                  onChange={(v) => this.setState({longUrl: v.target.value})}
-                />
-              </Form.Group>
-              {(!!this.state.file) && (
-                <Form.Group widths='equal'>
-                  <Form.Input fluid label='File to upload' value={this.state.file.name}/>
-                </Form.Group>
-              )}
-              {(!!this.state.file) && (
-                <Button color='blue' fluid size='large' onClick={this.handleUpload}>
-                  Upload
-                </Button>
-              )}
-            </Form>
-          </Grid.Column>
-          <Grid.Column width={8} style={{padding: '1em'}}>
-            <Form size='massive'>
-              <Form.Group widths='equal'>
-                <Button content="Choose File" labelPosition="left" icon="file" size='massive' color='blue' fluid onClick={() => this.fileInputRef.current.click()}/>
-                <input ref={this.fileInputRef} type="file" hidden onChange={this.fileChange}/>
-              </Form.Group>
-            </Form>
-          </Grid.Column>
-        </Grid.Row>
-      </Grid>
-    );
-  }
-
-  GenerateError = () => {
-    return(
-      <Grid container stackable verticalAlign='middle' textAlign='center'>
-        <Grid.Column>
-          <Grid.Row centered>
-            <Message warning>
-              <Message.Header>Sorry, something went wrong</Message.Header>
-              <p>{(!!this.state.errorMessage)?(this.state.errorMessage):('Please try again...')}</p>
-              <Button color='yellow' onClick={() => this.setState({error: false})}>Try again</Button>
-            </Message>
-          </Grid.Row>
-        </Grid.Column>
-      </Grid>
-    );
+    this.state = {};
   }
 
   render() {
-    const { children } = this.props;
-    const { fixed } = this.state;
-
     return(
       <ResponsiveContainer>
-        <Segment inverted style={{ backgroundColor: '#0d052d', padding: '3em 0em'}} vertical id={'link'}>
-          <this.Renderer/>
-        </Segment>
-        <Segment style={{ padding: '0em' }} vertical>
-          <Grid celled='internally' columns='equal' stackable>
-            <Grid.Row textAlign='center'>
-              <Grid.Column style={{ paddingBottom: '5em', paddingTop: '5em' }}>
-                <Header as='h3' style={{ fontSize: '2em' }}>
-                  What does <i>ovni</i> mean?
-                </Header>
-                <p style={{ fontSize: '1.33em' }}><i>Objeto Volador No Identificado</i> or <a href='https://en.wiktionary.org/wiki/OVNI' target='_blank'>spanish for UFO</a></p>
-              </Grid.Column>
-            </Grid.Row>
-          </Grid>
-        </Segment>
-        <Segment style={{ padding: '8em 0em' }} vertical>
-          <Grid container stackable verticalAlign='middle'>
-            <Grid.Row>
-              <Grid.Column width={6} textAlign='center'>
-                <Responsive {...Responsive.onlyMobile} as={Image} size='small' src='https://storage.googleapis.com/ovnis/assets/abduction-cow.png' verticalAlign='middle'/>
-                <Responsive {...Responsive.onlyTablet} as={Image} size='large' src='https://storage.googleapis.com/ovnis/assets/abduction-cow.png' verticalAlign='middle' />
-                <Responsive {...Responsive.onlyComputer} as={Image} size='large' src='https://storage.googleapis.com/ovnis/assets/abduction-cow.png' verticalAlign='middle' />
-              </Grid.Column>
-              <Grid.Column floated='right' width={8}>
-                <Header as='h3' style={{ fontSize: '2em' }}>
-                  Powerful, short links
-                </Header>
-                <p style={{ fontSize: '1.33em' }}>
-                  Create free, permanent short links to share everywhere
-                </p>
-                <Header as='h3' style={{ fontSize: '2em' }}>
-                  Harness the power of analytics
-                </Header>
-                <p style={{ fontSize: '1.33em' }}>
-                  Upgrade to access the full power of our analytics, track clicks and engagement in your links
-                </p>
-                <Header as='h3' style={{ fontSize: '2em' }}>
-                  Engage with your brand
-                </Header>
-                <p style={{ fontSize: '1.33em' }}>
-                  Upgrade to create custom short links with any extension you want
-                </p>
-              </Grid.Column>
-            </Grid.Row>
-          </Grid>
-        </Segment>
-        <Segment inverted vertical style={{ padding: '5em 0em' }}>
-          <Container>
-            <Grid divided inverted stackable>
-              <Grid.Row>
-                <Grid.Column width={4}>
-                  <Header inverted as='h4' content='About' />
-                  <List link inverted>
-                    <List.Item as='a'>About Us</List.Item>
-                    <List.Item as='a'>Contact Us</List.Item>
-                  </List>
-                </Grid.Column>
-                <Grid.Column width={4}>
-                  <Header inverted as='h4' content='Legal' />
-                  <List link inverted>
-                    <List.Item as='a'>Terms</List.Item>
-                    <List.Item as='a'>Privacy</List.Item>
-                  </List>
-                </Grid.Column>
-                <Grid.Column width={4}>
-                  <Header inverted as='h4' content='Credits' />
-                  <p>Created by <a href='https://herce.co' target='_blank'>Alex Herce</a></p>
-                  <p>Images made by <a href="https://www.flaticon.com/authors/eucalyp" target='_blank'>Eucalyp</a> & <a href="https://www.freepik.com/" target='_blank'>Freepik</a></p>
-                </Grid.Column>
-                <Grid.Column width={4}>
-                  <Header as='h4' inverted>
-                    © 2019 ovn.is
-                  </Header>
-                  <p>Made with ❤️ in Mexico City</p>
-                </Grid.Column>
-              </Grid.Row>
-            </Grid>
-          </Container>
-        </Segment>
+        <Router>
+          <Switch>
+            <Route exact path="/" component={Landing} />
+            <Route exact path="/x/not-found" component={NotFound} />
+            <Route exact path="/x/error" component={Error} />
+            <Route component={NoMatch} />
+          </Switch>
+        </Router>
       </ResponsiveContainer>
     );
   }

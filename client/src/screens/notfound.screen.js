@@ -1,7 +1,7 @@
 import React from 'react';
 import { Container, Grid, Segment, Header, Image } from 'semantic-ui-react';
 
-class NoMatch extends React.Component {
+class NotFound extends React.Component {
   render() {
     return(
       <Container style={{padding: '2.5em'}}>
@@ -10,7 +10,7 @@ class NoMatch extends React.Component {
             <Grid.Column width={10} textAlign='left'>
               <Header
                 as='h1'
-                content='Sorry, page not found'
+                content='Sorry, link not found'
                 style={{
                   fontSize: '3em',
                   fontWeight: 'bold',
@@ -20,7 +20,7 @@ class NoMatch extends React.Component {
               />
               <Header
                 as='h2'
-                content='Try again...'
+                content='The link you are trying to access is not available'
                 style={{
                   fontSize: '1.5em',
                   fontWeight: '100',
@@ -38,4 +38,4 @@ class NoMatch extends React.Component {
   }
 }
 
-export default NoMatch;
+export default NotFound;
