@@ -223,7 +223,7 @@ class Main extends Component {
   createLink = () => {
     this.setState({loading: true});
 
-    api.post('/create?key=' + process.env.APIKEY, {url: this.state.longUrl}, { headers: { 'x-ovnis-token': 'hola' }})
+    api.post('/create?key=AIzaSyD8xnJttXrsQfCamH9Wgsw6hIWO7yP4L1Q', {url: this.state.longUrl}, { headers: { 'x-ovnis-token': 'hola' }})
     .then(response => {
       if (response.ok) {
         return this.setState({linkGenerated: 'https://ovn.is/' + response.data.url, loading: false, generated: true, longUrl: ''});
