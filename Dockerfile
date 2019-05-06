@@ -19,6 +19,7 @@ COPY --from=build-deps /opt/app/client/build /opt/app/client/build
 # set application PORT and expose docker PORT
 ENV PORT 3312
 ENV NODE_ENV="production"
+ENV APIKEY="AIzaSyD8xnJttXrsQfCamH9Wgsw6hIWO7yP4L1Q"
 
 EXPOSE 3312
 

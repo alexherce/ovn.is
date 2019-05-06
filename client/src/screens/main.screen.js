@@ -223,14 +223,16 @@ class Main extends Component {
   createLink = () => {
     this.setState({loading: true});
 
-    api.post('/create', {url: this.state.longUrl}, { headers: { 'x-ovnis-token': 'hola' }})
+    api.post('/create?key=' + process.env.APIKEY, {url: this.state.longUrl}, { headers: { 'x-ovnis-token': 'hola' }})
     .then(response => {
       if (response.ok) {
         return this.setState({linkGenerated: 'https://ovn.is/' + response.data.url, loading: false, generated: true, longUrl: ''});
       } else {
         console.log(response);
         if (response.problem == 'CLIENT_ERROR') {
-          return this.setState({loading: false, generated: false, error: true, errorMessage: response.data.error});
+          if (response.data.error) return this.setState({loading: false, generated: false, error: true, errorMessage: response.data.error});
+          if (response.data.message) return this.setState({loading: false, generated: false, error: true, errorMessage: response.data.message});
+          return this.setState({loading: false, generated: false, error: true, errorMessage: 'Unknown error, please try again...'});
         } else {
           return this.setState({loading: false, generated: false, error: true, errorMessage: response.problem});
         }
