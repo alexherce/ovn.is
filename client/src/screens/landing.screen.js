@@ -138,7 +138,26 @@ class Landing extends Component {
         </Grid.Row>
         <Grid.Row centered>
           <Form size='massive' style={{width: '100%'}}>
-            <Form.Input
+            <Responsive {...Responsive.onlyMobile} as={Form.Input}
+              style={{marginTop: '1em', marginBottom: '1em'}}
+              size='medium'
+              inverted
+              action={{color: 'blue', content: 'Shorten', size: 'medium', onClick: () => this.createLink()}}
+              placeholder='Shorten your link'
+              value={this.state.longUrl}
+              onChange={(v) => this.setState({longUrl: v.target.value})}
+            />
+
+            <Responsive {...Responsive.onlyComputer} as={Form.Input}
+              size='large'
+              inverted
+              action={{color: 'blue', content: 'Shorten', size: 'massive', onClick: () => this.createLink()}}
+              placeholder='Shorten your link'
+              value={this.state.longUrl}
+              onChange={(v) => this.setState({longUrl: v.target.value})}
+            />
+
+            <Responsive {...Responsive.onlyTablet} as={Form.Input}
               size='large'
               inverted
               action={{color: 'blue', content: 'Shorten', size: 'massive', onClick: () => this.createLink()}}
@@ -153,7 +172,38 @@ class Landing extends Component {
         </Grid.Row>
         <Grid.Row centered>
           <Form size='massive' style={{width: '100%'}}>
-            <Button content={((!!this.state.file)?('Change Image'):('Choose Image')) + ' (jpg, png, gif, bmp)'} labelPosition="left" icon="image" size='massive' color={((!!this.state.file)?('grey'):('blue'))} fluid onClick={() => this.fileInputRef.current.click()}/>
+
+            <Responsive {...Responsive.onlyMobile} as={Button}
+              content={((!!this.state.file)?('Change Image'):('Choose Image'))}
+              labelPosition="left"
+              style={{marginTop: '1em', marginBottom: '1em'}}
+              icon="image"
+              size='massive'
+              color={((!!this.state.file)?('grey'):('blue'))}
+              fluid
+              onClick={() => this.fileInputRef.current.click()}
+            />
+
+            <Responsive {...Responsive.onlyTablet} as={Button}
+              content={((!!this.state.file)?('Change Image'):('Choose Image')) + ' (jpg, png, gif, bmp)'}
+              labelPosition="left"
+              icon="image"
+              size='massive'
+              color={((!!this.state.file)?('grey'):('blue'))}
+              fluid
+              onClick={() => this.fileInputRef.current.click()}
+            />
+
+            <Responsive {...Responsive.onlyComputer} as={Button}
+              content={((!!this.state.file)?('Change Image'):('Choose Image')) + ' (jpg, png, gif, bmp)'}
+              labelPosition="left"
+              icon="image"
+              size='massive'
+              color={((!!this.state.file)?('grey'):('blue'))}
+              fluid
+              onClick={() => this.fileInputRef.current.click()}
+            />
+
             <input ref={this.fileInputRef} type="file" hidden onChange={this.fileChange}/>
             {(!!this.state.file) && (
               <Form.Field>
