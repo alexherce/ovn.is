@@ -1,6 +1,5 @@
 import { create } from "apisauce";
 
-// const apiEndpoint = "http://localhost:4973/api/prometheus";
 const apiEndpoint = "https://api.ovn.is";
 
 const api = create({

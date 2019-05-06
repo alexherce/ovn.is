@@ -220,6 +220,12 @@ class Main extends Component {
   hideFixedMenu = () => this.setState({ fixed: false });
   showFixedMenu = () => this.setState({ fixed: true });
 
+  fileInputRef = React.createRef();
+
+  fileChange = e => {
+    this.setState({ file: e.target.files[0] });
+  };
+
   createLink = () => {
     this.setState({loading: true});
 
@@ -230,14 +236,43 @@ class Main extends Component {
       } else {
         console.log(response);
         if (response.problem == 'CLIENT_ERROR') {
-          if (response.data.error) return this.setState({loading: false, generated: false, error: true, errorMessage: response.data.error});
-          if (response.data.message) return this.setState({loading: false, generated: false, error: true, errorMessage: response.data.message});
-          return this.setState({loading: false, generated: false, error: true, errorMessage: 'Unknown error, please try again...'});
+          if (response.data.error) return this.setState({loading: false, generated: false, error: true, errorMessage: response.data.error, longUrl: ''});
+          if (response.data.message) return this.setState({loading: false, generated: false, error: true, errorMessage: response.data.message, longUrl: ''});
+          return this.setState({loading: false, generated: false, error: true, errorMessage: 'Unknown error, please try again...', longUrl: ''});
         } else {
-          return this.setState({loading: false, generated: false, error: true, errorMessage: response.problem});
+          return this.setState({loading: false, generated: false, error: true, errorMessage: response.problem, longUrl: ''});
         }
       }
     })
+  }
+
+  handleUpload = () => {
+    this.setState({loading: true});
+
+    const headers = {
+      'Content-Type': 'multipart/form-data'
+    };
+
+    let form = new FormData();
+
+    form.append('file', this.state.file);
+    form.append('identifier', this.state.folder);
+
+    api.post('https://uploader.ovn.is/upload?key=AIzaSyD8xnJttXrsQfCamH9Wgsw6hIWO7yP4L1Q', form, { headers })
+    .then(response => {
+      if (response.ok) {
+        return this.setState({linkGenerated: response.data.url, loading: false, generated: true, longUrl: '', file: ''});
+      } else {
+        console.log(response.data);
+        if (response.problem == 'CLIENT_ERROR') {
+          if (response.data.error) return this.setState({loading: false, generated: false, error: true, errorMessage: response.data.error, longUrl: '', file: ''});
+          if (response.data.message) return this.setState({loading: false, generated: false, error: true, errorMessage: response.data.message, longUrl: '', file: ''});
+          return this.setState({loading: false, generated: false, error: true, errorMessage: 'Unknown error, please try again...', longUrl: '', file: ''});
+        } else {
+          return this.setState({loading: false, generated: false, error: true, errorMessage: 'Unknown error, please try again...', longUrl: '', file: ''});
+        }
+      }
+    });
   }
 
   Renderer = () => {
@@ -282,17 +317,17 @@ class Main extends Component {
 
   GenerateForm = () => {
     return(
-      <Grid container stackable verticalAlign='middle' textAlign='center'>
-        <Grid.Column>
-          <Grid.Row centered>
-            <Header size='huge' inverted>Get your free short link</Header>
-          </Grid.Row>
-          <Grid.Row centered>
-            <Dimmer active={this.state.loading}>
-              <Loader size='large'>Creating link...</Loader>
-            </Dimmer>
+      <Grid container stackable verticalAlign='middle' textAlign='center' divided='horizontally'>
+        <Grid.Row centered>
+          <Header size='huge' inverted>Get your free short link</Header>
+          <Dimmer active={this.state.loading}>
+            <Loader size='large'>Creating link...</Loader>
+          </Dimmer>
+        </Grid.Row>
+        <Grid.Row centered>
+          <Grid.Column width={8} style={{padding: '1em'}}>
             <Form size='massive'>
-              <Form.Field>
+              <Form.Group>
                 <Form.Input
                   inverted
                   action={{color: 'blue', content: 'Shorten', size: 'massive', onClick: () => this.createLink()}}
@@ -300,10 +335,28 @@ class Main extends Component {
                   value={this.state.longUrl}
                   onChange={(v) => this.setState({longUrl: v.target.value})}
                 />
-              </Form.Field>
+              </Form.Group>
+              {(!!this.state.file) && (
+                <Form.Group widths='equal'>
+                  <Form.Input fluid label='File to upload' value={this.state.file.name}/>
+                </Form.Group>
+              )}
+              {(!!this.state.file) && (
+                <Button color='blue' fluid size='large' onClick={this.handleUpload}>
+                  Upload
+                </Button>
+              )}
             </Form>
-          </Grid.Row>
-        </Grid.Column>
+          </Grid.Column>
+          <Grid.Column width={8} style={{padding: '1em'}}>
+            <Form size='massive'>
+              <Form.Group widths='equal'>
+                <Button content="Choose File" labelPosition="left" icon="file" size='massive' color='blue' fluid onClick={() => this.fileInputRef.current.click()}/>
+                <input ref={this.fileInputRef} type="file" hidden onChange={this.fileChange}/>
+              </Form.Group>
+            </Form>
+          </Grid.Column>
+        </Grid.Row>
       </Grid>
     );
   }
