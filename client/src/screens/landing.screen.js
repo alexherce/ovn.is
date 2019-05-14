@@ -30,12 +30,6 @@ class Landing extends Component {
     };
   }
 
-  fileInputRef = React.createRef();
-
-  fileChange = e => {
-    this.setState({ file: e.target.files[0] });
-  };
-
   createLink = () => {
     this.setState({loading: true});
 
@@ -55,37 +49,6 @@ class Landing extends Component {
         }
       }
     })
-  }
-
-  handleUpload = () => {
-    this.setState({loading: true});
-
-    const headers = {
-      'Content-Type': 'multipart/form-data',
-      'Accept': 'application/json'
-    };
-
-    let form = new FormData();
-
-    form.append('file', this.state.file);
-    form.append('identifier', this.state.folder);
-
-    api.post('https://uploader.ovn.is/upload?key=AIzaSyD8xnJttXrsQfCamH9Wgsw6hIWO7yP4L1Q', form, { headers })
-    .then(response => {
-      if (response.ok) {
-        return this.setState({linkGenerated: response.data.url, loading: false, generated: true, longUrl: '', file: ''});
-      } else {
-        console.log(response.data);
-        if (response.problem === 'CLIENT_ERROR') {
-          if (response.data.error) return this.setState({loading: false, generated: false, error: true, errorMessage: response.data.error, longUrl: '', file: ''});
-          if (response.data.message) return this.setState({loading: false, generated: false, error: true, errorMessage: response.data.message, longUrl: '', file: ''});
-          if (response.status === 429) return this.setState({loading: false, generated: false, error: true, errorMessage: 'Error while communicating with our servers. Please try again...', longUrl: '', file: ''});
-          return this.setState({loading: false, generated: false, error: true, errorMessage: 'Unknown error, please try again...', longUrl: '', file: ''});
-        } else {
-          return this.setState({loading: false, generated: false, error: true, errorMessage: 'Unknown error, please try again...', longUrl: '', file: ''});
-        }
-      }
-    });
   }
 
   Renderer = () => {
@@ -166,57 +129,6 @@ class Landing extends Component {
               value={this.state.longUrl}
               onChange={(v) => this.setState({longUrl: v.target.value})}
             />
-          </Form>
-        </Grid.Row>
-        <Grid.Row centered>
-          <Header size='huge' inverted>...or host your image for free</Header>
-        </Grid.Row>
-        <Grid.Row centered>
-          <Form size='massive' style={{width: '100%'}}>
-
-            <Responsive {...Responsive.onlyMobile} as={Button}
-              content={((!!this.state.file)?('Change Image'):('Choose Image'))}
-              labelPosition="left"
-              style={{marginTop: '1em', marginBottom: '1em'}}
-              icon="image"
-              size='massive'
-              color={((!!this.state.file)?('grey'):('blue'))}
-              fluid
-              onClick={() => this.fileInputRef.current.click()}
-            />
-
-            <Responsive {...Responsive.onlyTablet} as={Button}
-              content={((!!this.state.file)?('Change Image'):('Choose Image')) + ' (jpg, png, gif, bmp)'}
-              labelPosition="left"
-              icon="image"
-              size='massive'
-              color={((!!this.state.file)?('grey'):('blue'))}
-              fluid
-              onClick={() => this.fileInputRef.current.click()}
-            />
-
-            <Responsive {...Responsive.onlyComputer} as={Button}
-              content={((!!this.state.file)?('Change Image'):('Choose Image')) + ' (jpg, png, gif, bmp)'}
-              labelPosition="left"
-              icon="image"
-              size='massive'
-              color={((!!this.state.file)?('grey'):('blue'))}
-              fluid
-              onClick={() => this.fileInputRef.current.click()}
-            />
-
-            <input ref={this.fileInputRef} type="file" hidden onChange={this.fileChange}/>
-            {(!!this.state.file) && (
-              <Form.Field>
-                <label style={{color: 'white', marginTop: '2em'}}>File to upload:</label>
-                <input fluid value={this.state.file.name} readOnly />
-              </Form.Field>
-            )}
-            {(!!this.state.file) && (
-              <Button color='blue' fluid size='massive' onClick={this.handleUpload}>
-                Upload
-              </Button>
-            )}
           </Form>
         </Grid.Row>
       </Grid>
